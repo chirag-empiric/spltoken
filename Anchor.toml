@@ -5,7 +5,7 @@ seeds = false
 skip-lint = false
 
 [programs.devnet]
-newtoken = "7SWQTWv4NAAN53zidepsVPYEAAdK7kuSGM83m6NsnGw8"
+newtoken = "FFPRjwArN5gz9XKtyi9Uut9FQQaFdQMvzYQYATkhUrja"
 
 [registry]
 url = "https://api.apr.dev"

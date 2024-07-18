@@ -24,6 +24,7 @@ describe("TESTING TOKEN CREATION", () => {
     [Buffer.from(MINT_SEED)],
     program.programId
   );
+  console.log("Mint is: ", mint);
 
   const [metadataAddress] = web3.PublicKey.findProgramAddressSync(
     [
@@ -90,7 +91,7 @@ describe("TESTING TOKEN CREATION", () => {
     };
 
     const txHash = await program.methods
-      .mintTokens(new BN(mintAmount * 10 ** metadata.decimals))
+      .mintTokens(new BN(mintAmount * 10 ** 0))
       .accounts(context)
       .rpc();
     await program.provider.connection.confirmTransaction(txHash);

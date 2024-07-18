@@ -1,14 +1,14 @@
 const { Keypair, Transaction, Connection, PublicKey } = require("@solana/web3.js");
-const { getAssociatedTokenAddress, createTransferCheckedInstruction, createAssociatedTokenAccountInstruction, getOrCreateAssociatedTokenAccount } = require("@solana/spl-token");
+const { getAssociatedTokenAddress, createTransferCheckedInstruction, createAssociatedTokenAccountInstruction } = require("@solana/spl-token");
 const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
 
 const owner = "3athqFzWSks9otL3rZgQHoQLGS9iZvoLcBmrMu2BWjcfBwNutUcHYp1PfN1wZ9FtLfQ5MEYbKnNjVSHDG9p3gTMz" // private key string previously obtained 
-const spltoken = new PublicKey("2obqhHtJKVxxTQyhpjxakREwYjyxWbpEwSHQ83USeRmc"); // Program Id of your SPL Token, obtained during "anchor deploy"
+const spltoken = new PublicKey("9DtdajeoxgjNc6dfLPmeTnPGevzQaUF6MXoCiYkpM3Tn"); // Program Id of your SPL Token, obtained during "anchor deploy"
 const sourceWallet = Keypair.fromSecretKey(bs58.decode(owner));
 const connection = new Connection("https://api.devnet.solana.com");
 
 const destWallet = new PublicKey("AZCMD8PAuRW9RqVksLxztTiUobbxFw3xq6Cf8oUVi9ve");
-const tokens = 2; // set the amount of tokens to transfer.
+const tokens = 143; // set the amount of tokens to transfer.
 
 async function genAta() {
     let ata = await getAssociatedTokenAddress(
@@ -16,6 +16,7 @@ async function genAta() {
         destWallet,
         false
     );
+    console.log("ATA: ", ata);
     let tx = new Transaction();
     tx.add(
         createAssociatedTokenAccountInstruction(
@@ -62,6 +63,8 @@ const solanaTransferSpl = async () => {
         return;
     }
     catch (error) {
+        console.log("Generating ATA...")
+        // console.log(error)
         let generateAta = await genAta();
         if (generateAta) {
             await new Promise((resolve) => setTimeout(resolve, 15000));

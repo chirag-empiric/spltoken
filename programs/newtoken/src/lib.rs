@@ -7,7 +7,7 @@ use anchor_spl::{
     },
     token::{mint_to, Mint, MintTo, Token, TokenAccount},
 };
-declare_id!("7SWQTWv4NAAN53zidepsVPYEAAdK7kuSGM83m6NsnGw8");
+declare_id!("FFPRjwArN5gz9XKtyi9Uut9FQQaFdQMvzYQYATkhUrja");
 
 #[program]
 mod newtoken {
@@ -18,8 +18,8 @@ mod newtoken {
         let signer = [&seeds[..]];
 
         let token_data: DataV2 = DataV2 {
-            name: "Net2Dev SPL Rewards Token".to_string(),
-            symbol: "N2DR".to_string(),
+            name: "Chirag Jani".to_string(),
+            symbol: "CAJ".to_string(),
             uri: "https://arweave.net/Xjqaj_rYYQGrsiTk9JRqpguA813w6NGPikcRyA1vAHM".to_string(),
             seller_fee_basis_points: 200,
             creators: None,
