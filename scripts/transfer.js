@@ -32,7 +32,7 @@ async function genAta() {
 }
 
 const solanaTransferSpl = async () => {
-    let amount = tokens * 10 ** 9;
+    let amount = tokens * 10 ** 0;
     let sourceTokenRaw = await getAssociatedTokenAddress(
         spltoken,
         sourceWallet.publicKey,
@@ -55,7 +55,7 @@ const solanaTransferSpl = async () => {
                 new PublicKey(destATA),
                 sourceWallet.publicKey,
                 amount,
-                9
+                0
             )
         )
         let tx = await connection.sendTransaction(transaction, [sourceWallet])
