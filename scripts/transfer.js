@@ -1,14 +1,14 @@
 const { Keypair, Transaction, Connection, PublicKey } = require("@solana/web3.js");
 const { getAssociatedTokenAddress, createTransferCheckedInstruction, createAssociatedTokenAccountInstruction } = require("@solana/spl-token");
 const { bs58 } = require("@coral-xyz/anchor/dist/cjs/utils/bytes");
+require("dotenv").config();
 
-const owner = "3athqFzWSks9otL3rZgQHoQLGS9iZvoLcBmrMu2BWjcfBwNutUcHYp1PfN1wZ9FtLfQ5MEYbKnNjVSHDG9p3gTMz" // private key string previously obtained 
-const spltoken = new PublicKey("9DtdajeoxgjNc6dfLPmeTnPGevzQaUF6MXoCiYkpM3Tn"); // Program Id of your SPL Token, obtained during "anchor deploy"
+const spltoken = process.env.TOKEN_MINT_ADDRESS
+const owner = new PublicKey(process.env.OWNER);
+const tokenDecimals = new PublicKey(process.env.TOKEN_DECIMALS);
 const sourceWallet = Keypair.fromSecretKey(bs58.decode(owner));
-const connection = new Connection("https://api.devnet.solana.com");
 
-const destWallet = new PublicKey("AZCMD8PAuRW9RqVksLxztTiUobbxFw3xq6Cf8oUVi9ve");
-const tokens = 143; // set the amount of tokens to transfer.
+const connection = new Connection("https://api.devnet.solana.com");
 
 async function genAta() {
     let ata = await getAssociatedTokenAddress(
@@ -26,13 +26,15 @@ async function genAta() {
             spltoken
         )
     );
-    console.log(`create ata txhash: ${await connection.sendTransaction(tx, [sourceWallet])}`);
+    console.log(`ATA Created at: ${await connection.sendTransaction(tx, [sourceWallet])}`);
     await new Promise((resolve) => setTimeout(resolve, 100));
     return true;
 }
 
-const solanaTransferSpl = async () => {
-    let amount = tokens * 10 ** 0;
+const solanaTransferSpl = async (transferAmount, receiverAddress) => {
+    let amount = transferAmount * 10 ** tokenDecimals;
+    // const destWallet = new PublicKey("5VBgSgSrPncFEvW8Bt2QE61pPC94HpVUhLWd2sPVSRqN");
+    const destWallet = new PublicKey(receiverAddress);
     let sourceTokenRaw = await getAssociatedTokenAddress(
         spltoken,
         sourceWallet.publicKey,
@@ -55,7 +57,7 @@ const solanaTransferSpl = async () => {
                 new PublicKey(destATA),
                 sourceWallet.publicKey,
                 amount,
-                0
+                tokenDecimals
             )
         )
         let tx = await connection.sendTransaction(transaction, [sourceWallet])
@@ -75,4 +77,4 @@ const solanaTransferSpl = async () => {
 }
 
 
-solanaTransferSpl();
+module.exports = solanaTransferSpl;

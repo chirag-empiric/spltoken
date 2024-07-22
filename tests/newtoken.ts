@@ -18,7 +18,10 @@ describe("TESTING TOKEN CREATION", () => {
 
   const MINT_SEED = "mint";
   const payer = program.provider.publicKey;
-  const mintAmount = 100 * 10 ** 9;
+  // set the total amount here - 100 Million
+  const mintAmount = 100;
+  // set the toke decimals - 0 for example - MAKE SURE IT MATCHES THE ONE IN THE ```lib.rs``` file
+  const tokenDecimals = 0;
 
   const [mint] = web3.PublicKey.findProgramAddressSync(
     [Buffer.from(MINT_SEED)],
@@ -91,7 +94,7 @@ describe("TESTING TOKEN CREATION", () => {
     };
 
     const txHash = await program.methods
-      .mintTokens(new BN(mintAmount * 10 ** 0))
+      .mintTokens(new BN(mintAmount * 10 ** tokenDecimals))
       .accounts(context)
       .rpc();
     await program.provider.connection.confirmTransaction(txHash);

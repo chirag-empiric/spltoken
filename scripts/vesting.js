@@ -1,38 +1,24 @@
-const solanaWeb3 = require('@solana/web3.js');
-const splToken = require('@solana/spl-token');
-
-const { Connection, PublicKey, Keypair } = solanaWeb3;
-const { getOrCreateAssociatedTokenAccount, transfer } = splToken;
-
-const connection = new Connection('https://api.mainnet-beta.solana.com');
-const payer = Keypair.fromSecretKey(Uint8Array.from("ENTER YOUR SECRET KEY OF OWNER"));
-const tokenMint = new PublicKey("MINT ADDRESS");
-const tokenDecimals = 0;
+const solanaTransferSpl = require('./transfer'); // Fixed import statement
 
 const vestingSchedule = [
-    { wallet: 'RecipientWalletAddress1', amount: 100 },
-    { wallet: 'RecipientWalletAddress2', amount: 200 },
+    { wallet: "AZCMD8PAuRW9RqVksLxztTiUobbxFw3xq6Cf8oUVi9ve", amount: 10 },
+    { wallet: "5VBgSgSrPncFEvW8Bt2QE61pPC94HpVUhLWd2sPVSRqN", amount: 20 },
 ];
 
 async function vestTokens() {
-    for (const { wallet, amount } of vestingSchedule) {
-        const recipientWallet = new PublicKey(wallet);
-        const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
-            connection,
-            payer,
-            tokenMint,
-            recipientWallet
-        );
+    try {
+        let promises = [];
+        for (const { wallet, amount } of vestingSchedule) {
+            console.log("Wallet and Amount is: ", wallet, amount);
+            promises.push(solanaTransferSpl(amount, wallet));
+        }
 
-        await transfer(
-            connection,
-            payer,
-            recipientTokenAccount.address,
-            amount * (10 ** tokenDecimals) // Adjust for token decimals, e.g., 6 decimals for USDC
-        );
-
-        console.log(`Transferred ${amount} tokens to ${wallet}`);
+        let response = await Promise.all(promises); // Await the completion of all promises
+        console.log("All token transfers completed:", response);
+    } catch (error) {
+        console.error("Error during token vesting:", error);
     }
 }
 
-vestTokens().catch(console.error);
+// CALL BY CRONJOB
+// vestTokens().catch(console.error);
